@@ -1,0 +1,13 @@
+services:
+ france-datamap:
+   image: france_datamap
+   container_name: france-datamap
+   ports:
+     - "8080:8080"
+   environment:
+     DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+     DEBUG: ${DEBUG}
+     DJANGO_LOGLEVEL: ${DJANGO_LOGLEVEL}
+     DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+   env_file:
+     - path: .env
