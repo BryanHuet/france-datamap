@@ -2,6 +2,8 @@ services:
  france-datamap:
    image: france_datamap
    container_name: france-datamap
+   volumes:
+     - ./france_datamap:/app/france_datamap/
    ports:
      - "8080:8080"
    environment:
