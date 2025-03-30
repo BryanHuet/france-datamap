@@ -22,16 +22,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the Django project to the container
 COPY . /app/
 
-# Build React
-RUN apt update && apt install -y nodejs npm && \
-    cd france_datamap/frontend && \
-    npm install && \
-    npm run build && \
-    cd .. && \
-    rm -rf frontend/node_modules && \
-    apt remove -y nodejs npm && apt autoremove -y && rm -rf /var/lib/apt/lists/*
-
-
 # Expose the Django port
 EXPOSE 8080
 
