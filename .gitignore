@@ -1,5 +1,5 @@
 .idea
 .env
 
-france_datamap/frontend/build
+#france_datamap/frontend/build
 france_datamap/frontend/node_modules
