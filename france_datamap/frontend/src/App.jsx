@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
+import TrendsDashboard from './components/TrendsDashboard';
 import './App.css';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
                     <Header />
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
+                        <Route path="/trends" element={<TrendsDashboard />} />
                         <Route path="/analytics" element={<Analytics />} />
                         <Route path="/settings" element={<Settings />} />
                     </Routes>
@@ -56,6 +58,12 @@ function Sidebar() {
                         <Link to="/">
                             <span className="nav-icon">📊</span>
                             <span className="nav-text">Dashboard</span>
+                        </Link>
+                    </li>
+                    <li className="nav-item">
+                        <Link to="/trends">
+                            <span className="nav-icon">📊</span>
+                            <span className="nav-text">Trends</span>
                         </Link>
                     </li>
                     <li className="nav-item">

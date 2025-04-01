@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell } from 'recharts';
 import { LineChart, Line } from 'recharts';
 import L from 'leaflet';
 
-// Fix pour les icônes Leaflet
+// Fix Leaflet icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -15,50 +15,32 @@ L.Icon.Default.mergeOptions({
 });
 
 const Dashboard = () => {
-    // Données pour les graphiques
-    const barData = [
-        { name: 'Jan', value: 400 },
-        { name: 'Fév', value: 300 },
-        { name: 'Mar', value: 600 },
-        { name: 'Avr', value: 800 },
-        { name: 'Mai', value: 500 },
-        { name: 'Jun', value: 700 },
-    ];
+    const [barData, setBarData] = useState([]);
+    const [pieData, setPieData] = useState([]);
+    const [lineData, setLineData] = useState([]);
+    const [markers, setMarkers] = useState([]);
+    const [stats, setStats] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const pieData = [
-        { name: 'Groupe A', value: 400 },
-        { name: 'Groupe B', value: 300 },
-        { name: 'Groupe C', value: 300 },
-        { name: 'Groupe D', value: 200 },
-    ];
-
-    const lineData = [
-        { name: 'Lun', value: 20 },
-        { name: 'Mar', value: 30 },
-        { name: 'Mer', value: 25 },
-        { name: 'Jeu', value: 40 },
-        { name: 'Ven', value: 35 },
-        { name: 'Sam', value: 50 },
-        { name: 'Dim', value: 45 },
-    ];
+    useEffect(() => {
+        fetch('http://localhost:8080/api/dashboard/')  // Modifie l'URL selon ton setup
+            .then(response => response.json())
+            .then(data => {
+                setBarData(data.barData);
+                setPieData(data.pieData);
+                setLineData(data.lineData);
+                setMarkers(data.markers);
+                setStats(data.stats);
+                setLoading(false);
+            })
+            .catch(error => console.error('Erreur de chargement des données:', error));
+    }, []);
 
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-    // Données pour la carte
-    const position = [48.8566, 2.3522]; // Paris
-    const markers = [
-        { position: [48.8566, 2.3522], name: 'Paris', users: 1254 },
-        { position: [45.7640, 4.8357], name: 'Lyon', users: 876 },
-        { position: [43.2965, 5.3698], name: 'Marseille', users: 943 },
-        { position: [43.6047, 1.4442], name: 'Toulouse', users: 621 },
-    ];
-
-    const [stats, setStats] = useState([
-        { id: 1, title: 'Utilisateurs actifs', value: '3,694', change: '+12%', status: 'positive' },
-        { id: 2, title: 'Sessions', value: '8,451', change: '+5.2%', status: 'positive' },
-        { id: 3, title: 'Taux de rebond', value: '32.8%', change: '-3.1%', status: 'positive' },
-        { id: 4, title: 'Temps moyen', value: '4m 12s', change: '+0.5%', status: 'neutral' },
-    ]);
+    if (loading) {
+        return <div>Chargement...</div>;
+    }
 
     return (
         <div className="dashboard">
@@ -96,11 +78,7 @@ const Dashboard = () => {
                 <div className="map-container">
                     <h3>Distribution géographique</h3>
                     <div className="leaflet-container">
-                        <MapContainer
-                            center={position}
-                            zoom={5}
-                            style={{ height: '100%', width: '100%', borderRadius: '8px' }}
-                        >
+                        <MapContainer center={[48.8566, 2.3522]} zoom={5} style={{ height: '100%', width: '100%', borderRadius: '8px' }}>
                             <TileLayer
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -124,15 +102,7 @@ const Dashboard = () => {
                     <h3>Répartition</h3>
                     <ResponsiveContainer width="100%" height={200}>
                         <PieChart>
-                            <Pie
-                                data={pieData}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={60}
-                                outerRadius={80}
-                                paddingAngle={5}
-                                dataKey="value"
-                            >
+                            <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
                                 {pieData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
@@ -154,33 +124,6 @@ const Dashboard = () => {
                             <Line type="monotone" dataKey="value" stroke="#6366F1" strokeWidth={2} />
                         </LineChart>
                     </ResponsiveContainer>
-                </div>
-
-                <div className="chart-container small">
-                    <h3>Nouveaux Événements</h3>
-                    <div className="events-list">
-                        <div className="event">
-                            <div className="event-badge success"></div>
-                            <div className="event-details">
-                                <div className="event-title">Nouveau client</div>
-                                <div className="event-time">Il y a 5 min</div>
-                            </div>
-                        </div>
-                        <div className="event">
-                            <div className="event-badge warning"></div>
-                            <div className="event-details">
-                                <div className="event-title">Alerte serveur</div>
-                                <div className="event-time">Il y a 12 min</div>
-                            </div>
-                        </div>
-                        <div className="event">
-                            <div className="event-badge info"></div>
-                            <div className="event-details">
-                                <div className="event-title">Mise à jour</div>
-                                <div className="event-time">Il y a 25 min</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

@@ -1,5 +1,7 @@
 .idea
 .env
 
+# Ignorer tous les dossiers __pycache__
+**/__pycache__/
 #france_datamap/frontend/build
 france_datamap/frontend/node_modules

@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from .views import index
+from .views import index, get_dashboard_data, get_trends_data
 
 urlpatterns = [
     path("", index),
     path('admin/', admin.site.urls),
     path('map/', include("map.urls")),
+    path('api/dashboard/', get_dashboard_data, name='dashboard-data'),
+    path('api/trends/', get_trends_data, name='dashboard-data'),
 ]
